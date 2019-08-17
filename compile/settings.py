@@ -25,7 +25,7 @@ SECRET_KEY = '$ri)nsjw70xmipq1_%e$w)7xos99_(%+az=_2t0gp)5jm0d*w&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -130,6 +130,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
@@ -148,4 +152,5 @@ CORS_ORIGIN_ALLOW_ALL = True
 #     "http://localhost:3000",
 #     "http://127.0.0.1:3000"
 # ]
+
 

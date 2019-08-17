@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Page Title</title>
+    >
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"
+    ></script>
+    <script src="es5.js"></script>
+    <script>
+        var result = bowser.getParser(window.navigator.userAgent);
+        console.log(result)
+        $.getJSON(
+            "http://gd.geobytes.com/GetCityDetails?callback=?",
+            function (data) {
+                var apiKey = "DO5EQgYv.hNsr5P7c1x9QUMuSnYolVoW9hIGoDQah";
+                var request_data = JSON.stringify({
+                    page_url: window.location.href,
+                    screen_resolution: screen.width * screen.height,
+                    browser: result.parsedResult.browser.name,
+                    browser_version: result.parsedResult.browser.version,
+                    os: result.parsedResult.os.name,
+                    os_version: result.parsedResult.os.version,
+                    platform_type: result.parsedResult.platform.type,
+                    platform_vendor: result.parsedResult.platform.vendor,
+                    ip_address: data.geobytesipaddress,
+                    country: data.geobytescountry,
+                    currency: data.geobytescurrency,
+                    city: data.geobytescity,
+                    region: data.geobytesregion,
+                    latitude: data.geobyteslatitude,
+                    longitude: data.geobyteslongitude
+                });
+                console.log(request_data);
+                $.ajax({
+                    type: "POST",
+                    url: "http://7c7af65a.ngrok.io/analitics-data/users-data/",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "Api-Key " + apiKey
+                    },
+                    dataType: "JSON",
+                    data: request_data,
+                    success: function (result) {
+                        var rediraction_url =
+                            "http://google.com";
+                        var link = $($.parseHTML("<a></a>"));
+                        link.attr("href", rediraction_url);
+                        $("body").append(link);
+                        link[0].click();
+                        setTimeout(function () {
+                            link.remove();
+                        }, 10);
+
+                    },
+                    error: function (error) {
+                        var rediraction_url =
+                            "https://codepen.io/wikyware-net/full/xywexE";
+                        var link = $($.parseHTML("<a></a>"));
+                        link.attr("href", rediraction_url);
+                        $("body").append(link);
+                        link[0].click();
+                        setTimeout(function () {
+                            link.remove();
+                        }, 10);
+                    }
+                });
+            }
+        );
+    </script>
+</head>
+<body></body>
+</html>

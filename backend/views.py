@@ -11,34 +11,20 @@ from rest_framework import status
 from django.db.models import Count
 from rest_framework.authtoken.models import Token
 from django.http import Http404
-
-
-# class UserViewSet(viewsets.ModelViewSet):
-#     """
-#     API endpoint that allows users to be viewed or edited.
-#     """
-#     queryset = User.objects.all().order_by('-date_joined')
-#     serializer_class = UserSerializer
-#
-#
-# class GroupViewSet(viewsets.ModelViewSet):
-#     """
-#     API endpoint that allows groups to be viewed or edited.
-#     """
-#     queryset = Group.objects.all()
-#     serializer_class = GroupSerializer
+import datetime
+import json
+from rest_framework_api_key.permissions import HasAPIKey
 
 
 class UserDataSet(APIView):
     """
     API endpoint that allows groups to be viewed or edited.
     """
-    permission_classes = []
-    authentication_classes = []
+    permission_classes = [HasAPIKey]
 
     def post(self, request, format=None):
-        print(request.META.get('HTTP_API_KEY'), '____________key')
-        api_key = request.META.get('HTTP_API_KEY')
+        print(request.META.get('HTTP_AUTHORIZATION'), '____________key')
+        api_key = request.META.get('HTTP_AUTHORIZATION').split(' ', 1)[1]
         serializer = UserDataSerializer(data=request.data)
         print(serializer.is_valid())
         serializer.validated_data['user'] = User.objects.get(api_key=api_key).email
@@ -54,7 +40,9 @@ class GetUserDataSet(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        queryset = UserData.objects.all()
+        token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        user = Token.objects.get(key=token).user.email
+        queryset = UserData.objects.all().filter(user=user)
         serializer = UserDataSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -108,17 +96,20 @@ class GetTop10ScreenResolutionsSet(APIView):
         return Response(queryset[:10])
 
 
-
 class GetFilterDataSet(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
+        print(request.GET.get('date-range'), "__________________request")
+        print(request.GET.get('browser'), "__________________request")
+        print(request.GET.get('start-date'), "__________________request")
+        print(request.GET.get('end-date'), "__________________request")
         key_browser = request.GET.get('browser')
         key_country = request.GET.get('country')
-        key_date_range = request.GET.get('key_date_range')
-
+        key_start_date = request.GET.get('start-date')
+        key_end_date = request.GET.get('end-date')
         user = Token.objects.get(key=token).user.email
 
         queryset = UserData.objects.filter(user=user)
@@ -127,8 +118,9 @@ class GetFilterDataSet(APIView):
             queryset = queryset.filter(browser=key_browser)
         if key_country:
             queryset = queryset.filter(country=key_country)
-        if key_date_range:
-            queryset = queryset.filter(date__range=key_date_range)
+        if key_end_date and key_start_date:
+            queryset = queryset.filter(date__range=[key_start_date, key_end_date])
 
         serializer = UserDataSerializer(queryset, many=True)
         return Response(serializer.data)
+        # return Response(queryset)

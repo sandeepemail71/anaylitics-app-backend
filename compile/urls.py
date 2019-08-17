@@ -15,14 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from backend import views
 from django.conf.urls import url
-
+from django.views.generic import TemplateView
+from django.conf.urls.static import static
+from django.conf import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('analitics-data/', include('backend.urls')),
-    path('user/', include('users.urls')),
-
-    # url(r'^login/$', views.UserLogin.as_view()),
-]
+                  path('admin/', admin.site.urls),
+                  path('analitics-data/', include('backend.urls')),
+                  path('user/', include('users.urls')),
+                  url(r'^$', TemplateView.as_view(template_name='../static/index.html')),
+              ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

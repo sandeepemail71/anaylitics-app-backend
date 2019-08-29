@@ -26,5 +26,4 @@ urlpatterns = [
     url(r'get-top-10-browsers/', views.GetTop10BrowsersSet.as_view()),
     url(r'get-top-10-screen-resolution/', views.GetTop10ScreenResolutionsSet.as_view()),
     url(r'get-filter-data-set/', views.GetFilterDataSet.as_view()),
-
 ]

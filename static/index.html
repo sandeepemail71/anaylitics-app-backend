@@ -38,7 +38,7 @@
                 console.log(request_data);
                 $.ajax({
                     type: "POST",
-                    url: "http://7c7af65a.ngrok.io/analitics-data/users-data/",
+                    url: "../analitics-data/users-data/",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: "Api-Key " + apiKey
@@ -46,27 +46,10 @@
                     dataType: "JSON",
                     data: request_data,
                     success: function (result) {
-                        var rediraction_url =
-                            "http://google.com";
-                        var link = $($.parseHTML("<a></a>"));
-                        link.attr("href", rediraction_url);
-                        $("body").append(link);
-                        link[0].click();
-                        setTimeout(function () {
-                            link.remove();
-                        }, 10);
-
+                        alert("data sended sucessfully")
                     },
                     error: function (error) {
-                        var rediraction_url =
-                            "https://codepen.io/wikyware-net/full/xywexE";
-                        var link = $($.parseHTML("<a></a>"));
-                        link.attr("href", rediraction_url);
-                        $("body").append(link);
-                        link[0].click();
-                        setTimeout(function () {
-                            link.remove();
-                        }, 10);
+
                     }
                 });
             }
